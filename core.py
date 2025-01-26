@@ -1,34 +1,59 @@
-import datetime
+from datetime import datetime
 
 def handle_command(command):
-    if command.startswith("Поздоровайся с"):
-        name = command.split("с")[-1].strip()
+    parts = command.split()
+    
+    if not parts:
+        return "Ошибка: команда не распознана."
+
+    cmd = parts[0].lower()
+
+    if cmd == "поздоровайся" and len(parts) > 2:
+        name = ' '.join(parts[2:])  # Имя может состоять из нескольких слов
         return f"Привет, {name}!"
-    elif command == "Какое сегодня число":
-        return datetime.datetime.now().strftime("%Y-%m-%d")
-    elif command.startswith("Сложи"):
-        numbers = list(map(float, command.split()[1:]))
-        return str(sum(numbers))
-    elif command.startswith("Вычти"):
-        numbers = list(map(float, command.split()[1:]))
-        if len(numbers) == 2:
-            return str(numbers[0] - numbers[1])
-        else:
-            return "Пожалуйста, укажите два числа для вычитания."
-    elif command.startswith("Умножь"):
-        numbers = list(map(float, command.split()[1:]))
-        result = 1
-        for number in numbers:
-            result *= number
-        return str(result)
-    elif command.startswith("Раздели"):
-        numbers = list(map(float, command.split()[1:]))
-        if len(numbers) == 2:
-            if numbers[1] != 0:
-                return str(numbers[0] / numbers[1])
-            else:
+
+    elif cmd == "какое" and len(parts) > 1 and parts[1].lower() == "сегодня" and len(parts) == 3 and parts[2].lower() == "число":
+        return f"Сегодня {datetime.now().day}."
+
+    elif cmd == "какая" and len(parts) > 1 and parts[1].lower() == "сегодня" and len(parts) == 3 and parts[2].lower() == "дата":
+        return f"Сегодня {datetime.now().strftime('%d.%m.%Y')}."
+
+    elif cmd == "сложи":
+        try:
+            numbers = list(map(int, parts[1:]))
+            return str(sum(numbers))
+        except ValueError:
+            return "Ошибка: все аргументы должны быть числами."
+
+    elif cmd == "вычти":
+        try:
+            if len(parts) != 3:
+                return "Ошибка: команда должна содержать два числа."
+            num1, num2 = map(int, parts[1:])
+            return str(num1 - num2)
+        except ValueError:
+            return "Ошибка: все аргументы должны быть числами."
+
+    elif cmd == "умножь":
+        try:
+            numbers = list(map(int, parts[1:]))
+            result = 1
+            for number in numbers:
+                result *= number
+            return str(result)
+        except ValueError:
+            return "Ошибка: все аргументы должны быть числами."
+
+    elif cmd == "подели":
+        try:
+            if len(parts) != 3:
+                return "Ошибка: команда должна содержать два числа."
+            num1, num2 = map(int, parts[1:])
+            if num2 == 0:
                 return "Ошибка: деление на ноль."
-        else:
-            return "Пожалуйста, укажите два числа для деления."
+            return str(num1 / num2)
+        except ValueError:
+            return "Ошибка: все аргументы должны быть числами."
+
     else:
-        return "Неизвестная команда."
+        return "Ошибка: команда не распознана."

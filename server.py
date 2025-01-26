@@ -6,7 +6,7 @@ def start_server(host='127.0.0.1', port=65432):
         server_socket.bind((host, port))
         server_socket.listen()
         print(f"Сервер запущен на {host}:{port}. Ожидание подключения...")
-        
+
         while True:
             conn, addr = server_socket.accept()
             with conn:
